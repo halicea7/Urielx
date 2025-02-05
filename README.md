@@ -25,6 +25,17 @@ Uriel is a **multipurpose research tool** that harnesses the power of **local LL
 2. **Summon Your Agents**: CrewAI constructs specialized entities to research, summarize, and analyze data.  
 3. **Receive Divine Insights**: Ask Uriel a question, and it will deliver knowledge like a seraphim delivering bad news.  
 
+## Requirements
+```bash
+python 3.10
+crewai==0.28.8
+crewai_tools==0.1.6
+langchain_community==0.0.29
+langchain_openai==0.2.1
+python-dotenv==1.0.1
+openai==1.3.0
+duckduckgo-search==3.0.0
+```
 ## ⚡ Installation & Setup  
 ```bash
 git clone https://github.com/halicea7/Uriel.git

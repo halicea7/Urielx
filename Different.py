@@ -33,7 +33,7 @@ search_tool = DuckDuckGoSearchRun()
 os.environ["OPENAI_API_KEY"] = "NA"
 
 llm = ChatOpenAI(
-    model="deepseek-r1:32b",
+    model="deepseek-r1:1.5b",
     base_url=OLLAMA_BASE_URL
 )
 
@@ -99,15 +99,15 @@ analyze = Task(
 
 summarize = Task(
     description=(
-        "1. Create a structured summary of all findings.\n"
-        "2. Highlight key conclusions and insights.\n"
-        "3. Include relevant citations and sources.\n"
-        "4. Organize information in a clear, logical manner.\n"
-        "5. Add recommendations for further research if applicable."
+        "Create a comprehensive research summary in markdown format.\n"
+        "Include the following sections:\n"
+        "  1. Executive Summary: Brief overview of the research findings.\n"
+        "  2. Key Findings: Detailed summary of the main results.\n"
+        "  3. Methodology: Description of the research approach and methods used.\n"
+        "  4. Citations: List of relevant sources cited in the summary.\n"
+        "Ensure the summary is clear, concise, and well-structured."
     ),
-    expected_output="A comprehensive research summary in markdown format, "
-                    "including executive summary, key findings, "
-                    "methodology, and citations.",
+    expected_output="A comprehensive research summary in markdown format.",
     agent=summarizer
 )
 
@@ -117,7 +117,7 @@ crew = Crew(
     verbose=2
 )
 
-inputs = {"topic": "Latest developments in quantum computing and its practical applications"}
+inputs = {"topic": "Today's major world events"}
 
 try:
     logger.info(f"Starting research compilation for topic: {inputs['topic']}")
