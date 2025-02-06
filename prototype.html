@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research Input with Rainbow Border</title>
+  <style>
+    /* Ensure the page fills the entire window */
+    body {
+      background: #222;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    
+    /* Position the input box at the top center */
+    .input-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-block;
+      padding: 5px; /* Space for the border effect */
+      border-radius: 10px;
+    }
+    
+    /* Style the text box */
+    .input-container input {
+      background: #333;       /* Dark background */
+      color: #fff;            /* White text */
+      border: none;
+      border-radius: 10px;    /* Rounded corners */
+      padding: 10px 15px;
+      font-size: 16px;
+      outline: none;
+      width: 300px;
+    }
+    
+    /* Rainbow animated border effect when active */
+    .input-container.active::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border-radius: inherit;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet, red);
+      background-size: 400%;
+      z-index: -1;
+      animation: rainbow 60s linear infinite;
+    }
+    
+    @keyframes rainbow {
+      0% { background-position: 0%; }
+      100% { background-position: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- The input container is not wrapped in any form -->
+  <div class="input-container" id="input-container">
+    <!-- Inline onkeydown handler intercepts the Enter key -->
+    <input type="text" id="user-input" placeholder="Enter research topic..." autocomplete="off"
+           onkeydown="if(event.key === 'Enter'){ event.preventDefault(); handleSubmit(); return false; }">
+  </div>
+  
+  <!-- p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <!-- Your external p5.js sketch; ensure sketch.js is in the same directory -->
+  <script src="sketch_bg_alt.js"></script>
+  
+  <!-- Inline input handling script -->
+  <script>
+    // This function handles the submission and prevents any default behavior.
+    function handleSubmit() {
+      var inputBox = document.getElementById('user-input');
+      var container = document.getElementById('input-container');
+      var topic = inputBox.value.trim();
+      if (topic === "") return;
+      
+      console.log("Submitting topic:", topic);
+      
+      // Add the "active" class to show the rainbow border if not already added.
+      if (!container.classList.contains('active')) {
+        container.classList.add('active');
+        console.log("Added active class - rainbow border should appear for 60 seconds.");
+        // Keep the border active for 60 seconds.
+        setTimeout(function() {
+          container.classList.remove('active');
+          console.log("Removed active class after 60 seconds.");
+        }, 60000);
+      }
+  
+      // Send the topic to your Flask backend via a POST request.
+      fetch('http://127.0.0.1:5000/run_research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: topic })
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        console.log("Response from backend:", data);
+      })
+      .catch(function(error) {
+        console.error("Error:", error);
+        container.classList.remove('active');
+      });
+      
+      // Clear the input box.
+      inputBox.value = "";
+    }
+  </script>
+</body>
+</html>
